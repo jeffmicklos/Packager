@@ -4,15 +4,20 @@ class Package {
 	
 	public static $packages = array(
 		
+		// Package name
 		'js' =>	array(
+			// File extension (js, css)
 			'file_type' => 'js',
+			// Specifi package info
 			'package' => array(
-				'version'		 => 6,
-				'directory' 	 => '/js/',
-				'extension'		 => 'js',
+				// Version, this should be bumped when you want a new file
+				'version'  => 6,
+				'directory' => '/js/',
+				'extension' => 'js',
 				'base_file_name' => 'package'
 			),
 			'assets' => array(
+				// Files to compress into the package
 				'files' => array(
 					'jQueryMissingTools.js',
 					'class.contactform.js',
@@ -28,9 +33,9 @@ class Package {
 		'css' =>	array(
 			'file_type' => 'css',
 			'package' => array(
-				'version'		 => 1,
-				'directory' 	 => '/css/',
-				'extension'		 => 'css',
+				'version'  => 1,
+				'directory' => '/css/',
+				'extension' => 'css',
 				'base_file_name' => 'package'
 			),
 			'assets' => array(

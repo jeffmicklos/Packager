@@ -1,7 +1,13 @@
 <?php
 
 class PackageBuilder {
-
+	
+	const JS_MINIFIER_PATH = './lib/jsmin.php';
+	const CSS_MINIFIER_PATH = './lib/cssmin.php';
+	
+	const JS_MINIFIER_NAME= 'JSMin';
+	const CSS_MINIFIER_NAME = 'cssmin';
+	
 	function __construct($package) {
 		
 		$this->package = $package;
@@ -9,6 +15,12 @@ class PackageBuilder {
 		
 	}
 	
+	/**
+	* Checks if packaged file already exists,
+	* if not, build a new package
+	*
+	* @return string $file the package path
+	*/
 	public function get_package() {
 	
 		$file = $this->get_packaged_file_name();
@@ -19,13 +31,18 @@ class PackageBuilder {
 			
 		} else {
 
-			$this->build_package($this->type);
+			$this->build_package();
 
 		}
 		
 	}
 	
-	public function get_packaged_file_name() {
+	/**
+	* Compiles the name/path of a package file from it's array
+	*
+	* @return string $full_name name of the packaged file
+	*/
+	private function get_packaged_file_name() {
 		
 		$file_data = $this->package['package'];
 		
@@ -35,30 +52,41 @@ class PackageBuilder {
 		
 	}
 	
-	public function build_package($type) {
+	/**
+	* Puts minified and concat'd code into file
+	*/
+	private function build_package() {
 
-		$this->include_minifier($type);
+		$this->include_minifier();
 		
 		$file = $this->get_packaged_file_name();
-		$contents = $this->get_code($type);
-		$minified_contents = $this->minify($type, $contents);
+		$contents = $this->get_code();
+		$minified_contents = $this->minify($contents);
 		
 		file_put_contents($file, $minified_contents);
 		
 	}
 	
-	public function include_minifier($type) {
+	/**
+	* Includes the desired minification script based on file type
+	*/
+	private function include_minifier() {
 		
-		if($type == 'js') {
-			require('./lib/jsmin.php');	
+		if($this->type == 'js') {
+			require(self::JS_MINIFIER_PATH);	
 		} else {
-			require('./lib/cssmin.php');
+			require(self::CSS_MINIFIER_PATH);
 		}
 		
 		
 	}
 	
-	public function get_code($type) {
+	/**
+	* cURLs to all unpackaged files and returns them all contact'd
+	
+	* @return string $results source from all files
+	*/
+	private function get_code() {
 		
 		$results = '';
 
@@ -87,7 +115,10 @@ class PackageBuilder {
 		
 	}
 	
-	public function get_files() {
+	/**
+	* @return array $files a list of files to compact
+	*/
+	private function get_files() {
 		
 		$files = array();
 		$directory = $this->package['assets']['directory'];
@@ -102,9 +133,12 @@ class PackageBuilder {
  		
 	}
 	
-	public function minify($type, $code) {
+	/**
+	* Minfies code with external libs
+	*/
+	private function minify($code) {
 		
-		$minifier = $this->get_minifier_name($type);
+		$minifier = $this->get_minifier_name($this->type);
 		
 		return call_user_func_array(
 			array($minifier, 'minify'), 
@@ -113,12 +147,15 @@ class PackageBuilder {
 
 	}
 	
-	public function get_minifier_name($type) {
+	/**
+	* @return string minififer name
+	*/
+	private function get_minifier_name() {
 		
-		if($type == 'js') {
-			return 'JSMin';
+		if($this->type == 'js') {
+			return self::JS_MINIFIER_NAME;
 		} else {
-			return 'cssmin';
+			return self::CSS_MINIFIER_NAME;
 		}
 		
 	}
