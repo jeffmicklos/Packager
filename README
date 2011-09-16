@@ -1,0 +1,31 @@
+This is all kinda ghetto right now but check it…
+
+Fill out the packages array with your information:
+
+public static $packages = array(
+	'js' =>	array(
+		'file_type' => 'js',
+		'package' => array(
+			'version'		 => 6,
+			'directory' 	 => '/js/',
+			'extension'		 => 'js',
+			'base_file_name' => 'package'
+		),
+		'assets' => array(
+			'files' => array(
+				'jQuery.js',
+				'lightbox.js',
+				'myCoolTool.js',
+				'myAwesomeClass.js'
+			)
+		)
+	)
+);
+
+To get the most up to date file, you can use it like such:
+
+<script src="<?php echo Package::get_package('js'); ?>"></script>
+
+
+Whenever you want to generate a new package (bumping the cache),
+just increment the version number in $packages['MYPACKAGENAME']['package']['version']
